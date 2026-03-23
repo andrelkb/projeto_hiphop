@@ -18,4 +18,15 @@ class Aluno(models.Model):
 
     def __str__(self):
         return self.nome
-    
+
+
+# Tabela para registrar as Faltas e Presenças
+class Presenca(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    oficina = models.ForeignKey(Oficina, on_delete=models.CASCADE)
+    data = models.DateField()
+    presente = models.BooleanField(default=True)
+
+    def __str__(self):
+        status = "Presente" if self.presente else "Faltou"
+        return f"{self.aluno.nome} - {self.oficina.nome} ({self.data}): {status}"
