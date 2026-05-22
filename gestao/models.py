@@ -15,9 +15,24 @@ class Aluno(models.Model):
     telefone = models.CharField(max_length=15)
     data_cadastro = models.DateTimeField(auto_now_add=True)
     oficinas = models.ManyToManyField(Oficina)
+    cpf = models.CharField(max_length=14, blank=True, null=True)
+    nome_responsavel = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.nome
+    
+    @property
+    def percentual_frequencia(self):
+        # Conta o total de registros de chamada para este aluno
+        total_aulas = self.presenca_set.count()
+        if total_aulas == 0:
+            return 0  # Evita erro de divisão por zero se o aluno for novo
+            
+        # Conta quantas dessas chamadas ele estava presente
+        presencas = self.presenca_set.filter(presente=True).count()
+        
+        # Calcula a porcentagem e arredonda para número inteiro
+        return int((presencas / total_aulas) * 100)
 
 
 # Tabela para registrar as Faltas e Presenças
